@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\OpenAPIValidation\Schema;
 
 use cebe\openapi\spec\Schema;
+use cebe\openapi\spec\Schema as CebeSchema;
 use cebe\openapi\spec\Type as CebeType;
 use League\OpenAPIValidation\Foundation\ArrayHelper;
 use League\OpenAPIValidation\Schema\Exception\InconsistentSchema;
@@ -33,7 +34,7 @@ final class SchemaConsistencyValidator implements Validator
 
     /**
      * @param RecursiveArrayIterator<string|int, mixed> $iterator
-     * @param array<string> $parents
+     * @param array<string>                             $parents
      *
      * @throws InconsistentSchema
      */
@@ -43,6 +44,7 @@ final class SchemaConsistencyValidator implements Validator
         BreadCrumb $breadCrumb,
         array $parents = []
     ): void {
+        // TODO: polymorphic schemas validation
         while ($iterator->valid()) {
             $key = $iterator->key();
 
@@ -57,24 +59,26 @@ final class SchemaConsistencyValidator implements Validator
                 );
             }
 
-            $currentSchema = $schema;
+            $currentSchema                   = $schema;
+            $propertyMustBeDefinedExplicitly = ! ($currentSchema->additionalProperties instanceof CebeSchema);
+            $propertyMustBeDefinedExplicitly = $propertyMustBeDefinedExplicitly || $schema->minProperties !== null;
 
             foreach ($parents as $parentKey) {
                 $currentSchema = $currentSchema->properties[$parentKey] ?? null;
 
-                if ($currentSchema === null) {
+                if ($currentSchema === null && $propertyMustBeDefinedExplicitly) {
                     throw InconsistentSchema::create($breadCrumb);
                 }
             }
 
-            if ($currentSchema->type !== CebeType::OBJECT) {
+            if ($currentSchema && $currentSchema->type !== CebeType::OBJECT) {
                 $iterator->next();
                 continue;
             }
 
             $propertySchema = $currentSchema->properties[$key] ?? null;
 
-            if ($propertySchema === null) {
+            if ($propertySchema === null && $propertyMustBeDefinedExplicitly) {
                 $breadCrumb = $breadCrumb->addCrumb($key);
 
                 throw InconsistentSchema::create($breadCrumb);

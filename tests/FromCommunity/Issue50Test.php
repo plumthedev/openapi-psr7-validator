@@ -58,10 +58,7 @@ YAML;
                     json_encode(
                         [
                             'body' =>
-                                [
-                                    'username' => 'scaytrase',
-                                    'notEmail' => 'notEmail',
-                                ],
+                                ['username' => 'scaytrase'],
                         ]
                     )
                 )

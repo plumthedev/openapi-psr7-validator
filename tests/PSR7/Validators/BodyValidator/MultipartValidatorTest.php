@@ -59,6 +59,7 @@ HTTP
             ],
             // multiple files with the same part name (array of files)
             [
+                // TODO: probably wrongly deserialized form data
                 <<<HTTP
 POST /multipart/files HTTP/1.1
 Content-Length: 2740
@@ -68,17 +69,17 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryWfPNVh4wuWBlyE
 Content-Disposition: form-data; name="fileName"; filename="file1.txt"
 Content-Type: text/plain
 
-[file content goes there]
+[text/plain file content goes there]
 ------WebKitFormBoundaryWfPNVh4wuWBlyEyQ
 Content-Disposition: form-data; name="fileName"; filename="file2.png"
 Content-Type: image/png
 
-[file content goes there]
+[image/png file content goes there]
 ------WebKitFormBoundaryWfPNVh4wuWBlyEyQ
 Content-Disposition: form-data; name="fileName"; filename="file3.jpg"
 Content-Type: image/jpeg
 
-[file content goes there]
+[image/jpeg file content goes there]
 ------WebKitFormBoundaryWfPNVh4wuWBlyEyQ--
 HTTP
 ,

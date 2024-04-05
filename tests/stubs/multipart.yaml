@@ -24,6 +24,8 @@ paths:
                 id:            # Part 1 (string value)
                   type: string
                   format: uuid
+                token: # Part 1 (string value)
+                  type: string
                 address:       # Part2 (object)
                   type: object
                   properties:
@@ -48,7 +50,7 @@ paths:
             schema:
               type: object
               properties:
-                filename:
+                fileName:
                   type: array
                   items:
                     type: string

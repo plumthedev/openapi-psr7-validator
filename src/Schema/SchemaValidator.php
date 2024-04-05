@@ -55,6 +55,9 @@ final class SchemaValidator implements Validator
     {
         $breadCrumb = $breadCrumb ?? new BreadCrumb();
 
+        // check recursive if the schema is covering all properties provided in data
+        (new SchemaConsistencyValidator())->validate($data, $schema, $breadCrumb);
+
         try {
             // These keywords are not part of the JSON Schema at all (new to OAS)
             (new Nullable($schema))->validate($data, $schema->nullable ?? true);
